@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>IMS Dashboard</title>
+
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100 p-6">
+
+<h1 class="text-3xl font-bold mb-6">
+    IMS Dashboard
+</h1>
+
+<div class="grid grid-cols-4 gap-4 mb-6">
+
+    <div class="bg-red-500 text-white p-4 rounded">
+        P0 Incidents
+    </div>
+
+    <div class="bg-orange-500 text-white p-4 rounded">
+        P1 Incidents
+    </div>
+
+    <div class="bg-yellow-500 text-white p-4 rounded">
+        P2 Incidents
+    </div>
+
+    <div class="bg-blue-500 text-white p-4 rounded">
+        P3 Incidents
+    </div>
+
+</div>
+
+<div
+    hx-get="/incidents/table"
+    hx-trigger="load, every 5s"
+    hx-target="#incident-table">
+</div>
+
+<hr class="my-6">
+
+<h2 class="text-2xl font-bold mb-4">
+    RCA Form
+</h2>
+
+<form id="rcaForm" class="bg-white p-4 rounded shadow">
+
+    <input
+        type="text"
+        id="incident_id"
+        placeholder="Incident ID (INC001)"
+        class="border p-2 w-full mb-4"
+        required
+    >
+
+    <input
+        type="text"
+        id="root_cause"
+        placeholder="Root Cause"
+        class="border p-2 w-full mb-4"
+        required
+    >
+
+    <textarea
+        id="fix"
+        placeholder="Fix Applied"
+        class="border p-2 w-full mb-4"
+        rows="4"
+        required
+    ></textarea>
+
+    <textarea
+        id="prevention"
+        placeholder="Prevention Steps"
+        class="border p-2 w-full mb-4"
+        rows="4"
+        required
+    ></textarea>
+
+    <button
+        type="submit"
+        class="bg-blue-500 text-white px-4 py-2 rounded"
+    >
+        Close Incident
+    </button>
+
+</form>
+
+<script>
+
+document.getElementById("rcaForm")
+.addEventListener("submit", async (e) => {
+
+    e.preventDefault();
+
+    const incident_id =
+        document.getElementById("incident_id").value;
+
+    const payload = {
+
+        root_cause:
+            document.getElementById("root_cause").value,
+
+        fix:
+            document.getElementById("fix").value,
+
+        prevention:
+            document.getElementById("prevention").value
+    };
+
+    const res = await fetch(
+        `/close/${incident_id}`,
+        {
+            method: "POST",
+
+            headers: {
+                "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify(payload)
+        }
+    );
+
+    const data = await res.json();
+
+    alert(JSON.stringify(data));
+
+    location.reload();
+
+});
+
+</script>
+
+
+<div id="incident-table"></div>
+
+</body>
+</html>

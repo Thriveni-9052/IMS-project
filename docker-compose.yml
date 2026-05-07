@@ -1,0 +1,65 @@
+version: "3.9"
+
+services:
+
+  # =======================
+  # 🧠 Backend (FastAPI)
+  # =======================
+  backend:
+    build: ./backend
+    container_name: ims-backend
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+      - redis
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/ims
+      - REDIS_URL=redis://redis:6379/0
+    volumes:
+      - ./backend:/app
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+
+  # =======================
+  # 🖥️ Frontend (React)
+  # =======================
+  frontend:
+    build: ./frontend
+    container_name: ims-frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    environment:
+      - REACT_APP_API_URL=http://localhost:8000
+    volumes:
+      - ./frontend:/app
+    command: npm start
+
+  # =======================
+  # 🗄️ PostgreSQL (Source of Truth)
+  # =======================
+  db:
+    image: postgres:15
+    container_name: ims-db
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: ims
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  # =======================
+  # ⚡ Redis (Cache + Rate Limiter)
+  # =======================
+  redis:
+    image: redis:7
+    container_name: ims-redis
+    ports:
+      - "6379:6379"
+
+volumes:
+  pgdata:

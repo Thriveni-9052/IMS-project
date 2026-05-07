@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2 class="text-2xl font-bold mb-4">
+
+    Incident {{incident.id}}
+
+</h2>
+
+<div class="bg-white p-6 rounded shadow">
+
+    <p>
+        <strong>Component:</strong>
+        {{incident.component_id}}
+    </p>
+
+    <p>
+        <strong>Status:</strong>
+        {{incident.status}}
+    </p>
+
+    <p>
+        <strong>Severity:</strong>
+        {{incident.severity}}
+    </p>
+
+</div>
+<form
+  class="mt-6 bg-white p-6 rounded shadow"
+  hx-post="/incidents/{{incident.id}}/rca">
+
+    <h3 class="text-xl font-bold mb-4">
+        RCA Form
+    </h3>
+
+    <input
+       type="datetime-local"
+       name="start_time"
+       class="border p-2 w-full mb-4">
+
+    <input
+       type="datetime-local"
+       name="end_time"
+       class="border p-2 w-full mb-4">
+
+    <select
+       name="category"
+       class="border p-2 w-full mb-4">
+
+       <option>Database Failure</option>
+       <option>Cache Failure</option>
+
+    </select>
+
+    <textarea
+      name="fix_applied"
+      placeholder="Fix Applied"
+      class="border p-2 w-full mb-4">
+    </textarea>
+
+    <textarea
+      name="prevention_steps"
+      placeholder="Prevention Steps"
+      class="border p-2 w-full mb-4">
+    </textarea>
+
+    <button
+      class="bg-green-500 text-white px-4 py-2 rounded">
+
+      Submit RCA
+
+    </button>
+
+</form>
+
+{% endblock %}

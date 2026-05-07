@@ -1,0 +1,55 @@
+<table class="w-full bg-white rounded shadow">
+
+<thead class="bg-gray-200">
+
+<tr>
+    <th class="p-3">ID</th>
+    <th class="p-3">Component</th>
+    <th class="p-3">Severity</th>
+    <th class="p-3">Status</th>
+    <th class="p-3">Action</th>
+</tr>
+
+</thead>
+
+<tbody>
+
+{% for incident in incidents %}
+
+<tr class="border-b">
+
+    <td class="p-3">
+        {{ incident.id }}
+    </td>
+
+    <td class="p-3">
+        {{ incident.component_id }}
+    </td>
+
+    <td class="p-3">
+        {{ incident.severity }}
+    </td>
+
+    <td class="p-3">
+        {{ incident.status }}
+    </td>
+
+    <td class="p-3">
+
+        <a
+           href="/incidents/{{incident.id}}"
+           class="bg-blue-500 text-white px-3 py-1 rounded">
+
+           View
+
+        </a>
+
+    </td>
+
+</tr>
+
+{% endfor %}
+
+</tbody>
+
+</table>

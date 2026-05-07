@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>IMS Dashboard</title>
+
+    <style>
+        body {
+            font-family: Arial;
+            margin: 0;
+        }
+
+        #header {
+            background: #111;
+            color: white;
+            padding: 10px;
+            display: flex;
+            justify-content: space-around;
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<div id="header">
+    <div>Signals/sec: 8200</div>
+    <div>Active Incidents: 12</div>
+    <div>Queue: 340</div>
+    <div>Health: 🟢 OK</div>
+</div>
+
+<!-- MAIN LAYOUT -->
+<div style="display:flex; height:90vh;">
+
+    <!-- LEFT -->
+    <div style="width:20%; background:#f2f2f2; padding:10px;">
+        <h3>Filters</h3>
+        <input type="checkbox"> P0<br>
+        <input type="checkbox"> P1<br>
+        <input type="checkbox"> P2<br>
+        <input type="checkbox"> P3<br>
+        <hr>
+        <input type="checkbox"> OPEN<br>
+        <input type="checkbox"> CLOSED<br>
+    </div>
+
+    <!-- CENTER -->
+    <div style="width:50%; padding:10px;">
+        <h3>Incident Feed</h3>
+
+        <table border="1" width="100%">
+            <tr>
+                <th>ID</th>
+                <th>Component</th>
+                <th>Severity</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+
+            <tr>
+                <td>INC001</td>
+                <td>CACHE</td>
+                <td style="color:orange;">P2</td>
+                <td>OPEN</td>
+                <td><button>View</button></td>
+            </tr>
+
+            <tr>
+                <td>INC002</td>
+                <td>RDBMS</td>
+                <td style="color:red;">P0</td>
+                <td>INVESTIGATING</td>
+                <td><button>View</button></td>
+            </tr>
+       </table>
+       <hr>
+
+<h2>RCA Form</h2>
+
+<form id="rcaForm">
+
+    <input
+        type="text"
+        id="incident_id"
+        placeholder="Incident ID"
+        required
+    >
+
+    <br><br>
+
+    <input
+        type="text"
+        id="root_cause"
+        placeholder="Root Cause"
+        required
+    >
+
+    <br><br>
+
+    <textarea
+        id="fix"
+        placeholder="Fix Applied"
+        required
+    ></textarea>
+
+    <br><br>
+
+    <textarea
+        id="prevention"
+        placeholder="Prevention Steps"
+        required
+    ></textarea>
+
+    <br><br>
+
+    <button type="submit">
+        Close Incident
+    </button>
+
+</form>
+
+<script>
+
+document.getElementById("rcaForm")
+.addEventListener("submit", async (e) => {
+
+    e.preventDefault();
+
+    const incident_id =
+        document.getElementById("incident_id").value;
+
+    const payload = {
+
+        root_cause:
+            document.getElementById("root_cause").value,
+
+        fix:
+            document.getElementById("fix").value,
+
+        prevention:
+            document.getElementById("prevention").value
+    };
+
+    const res = await fetch(
+        `/close/${incident_id}`,
+        {
+            method: "POST",
+
+            headers: {
+                "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify(payload)
+        }
+    );
+
+    const data = await res.json();
+
+    alert(JSON.stringify(data));
+
+    location.reload();
+
+});
+
+</script>
+
+
+
+
+
+    </div>
+
+    <!-- RIGHT -->
+    <div style="width:30%; background:#fafafa; padding:10px;">
+        <h3>Incident Details</h3>
+
+        <p><b>ID:</b> INC001</p>
+        <p><b>Status:</b> OPEN</p>
+
+        <h4>RCA FORM</h4>
+
+        <label>Root Cause</label><br>
+        <select>
+            <option>DB Failure</option>
+            <option>API Failure</option>
+            <option>Cache Failure</option>
+        </select>
+
+        <br><br>
+
+        <label>Fix Applied</label><br>
+        <textarea></textarea><br><br>
+
+        <label>Prevention</label><br>
+        <textarea></textarea><br><br>
+
+        <button style="background:red;color:white;">
+            Close Incident
+        </button>
+    </div>
+
+</div>
+
+</body>
+</html>
